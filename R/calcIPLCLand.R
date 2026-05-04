@@ -79,18 +79,7 @@ calcIPLCLand <- function(maginput = TRUE, nclasses = "seven", datasource = "Land
     )[, "y2020", ]
     getYears(luIni) <- NULL
     getCells(luIni) <- getCells(iplc)
-    # calculate mismatch that is shifted to pasture
-    otherMismatch <- iplc[, , "other"] - luIni[, , "other"]
-    otherMismatch <- toolConditionalReplace(otherMismatch, c("<0", "is.na()"), 0)
-    # but shift cannot be bigger than current LUH pasture
-    # to avoid additional pasture expansion due to conservation measure
-    pastMaxShift <- setNames(luIni[, , "past"], NULL) - iplc[, , "past"]
-    pastMaxShift <- toolConditionalReplace(pastMaxShift, c("<0", "is.na()"), 0)
-    otherMismatch <- pmin(otherMismatch, setItems(pastMaxShift, dim = 3.2, "other"))
-    # subtract other land mismatch
-    iplc[, , "other"] <- iplc[, , "other"] - otherMismatch
-    # add to ESA CCI "pasture & rangeland" class instead
-    iplc[, , "past"] <- iplc[, , "past"] + setItems(otherMismatch, dim = 3.2, "past")
+    iplc <- toolCorrectOpenEcosystemMismatch(iplc, luIni)
 
     if (nclasses %in% c("seven", "nine")) {
       # differentiate primary and secondary forest based on LUH3 data

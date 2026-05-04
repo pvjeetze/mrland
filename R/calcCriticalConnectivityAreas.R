@@ -76,18 +76,7 @@ calcCriticalConnectivityAreas <- function(maginput = TRUE, nclasses = "seven",
     )[, "y2020", ]
     getYears(luIni) <- NULL
     getCells(luIni) <- getCells(cca)
-    # calculate mismatch that is shifted to pasture
-    otherMismatch <- cca[, , "other"] - luIni[, , "other"]
-    otherMismatch <- toolConditionalReplace(otherMismatch, c("<0", "is.na()"), 0)
-    # but shift cannot be bigger than current LUH pasture
-    # to avoid additional pasture expansion due to conservation measure
-    pastMaxShift <- setNames(luIni[, , "past"], NULL) - cca[, , "past"]
-    pastMaxShift <- toolConditionalReplace(pastMaxShift, c("<0", "is.na()"), 0)
-    otherMismatch <- pmin(otherMismatch, setItems(pastMaxShift, dim = 3.2, "other"))
-    # subtract other land mismatch
-    cca[, , "other"] <- cca[, , "other"] - otherMismatch
-    # add to ESA CCI "pasture & rangeland" class instead
-    cca[, , "past"] <- cca[, , "past"] + setItems(otherMismatch, dim = 3.2, "past")
+    cca <- toolCorrectOpenEcosystemMismatch(cca, luIni)
 
     if (nclasses %in% c("seven", "nine")) {
       # differentiate primary and secondary forest based on LUH3 data

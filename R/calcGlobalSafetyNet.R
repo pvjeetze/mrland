@@ -84,18 +84,7 @@ calcGlobalSafetyNet <- function(maginput = TRUE, nclasses = "seven", cells = "lp
     )[, "y2020", ]
     getYears(luIni) <- NULL
     getCells(luIni) <- getCells(gsn)
-    # calculate mismatch that is shifted to pasture
-    otherMismatch <- gsn[, , "other"] - luIni[, , "other"]
-    otherMismatch <- toolConditionalReplace(otherMismatch, c("<0", "is.na()"), 0)
-    # but shift cannot be bigger than current LUH pasture
-    # to avoid additional pasture expansion due to conservation measure
-    pastMaxShift <- setNames(luIni[, , "past"], NULL) - gsn[, , "past"]
-    pastMaxShift <- toolConditionalReplace(pastMaxShift, c("<0", "is.na()"), 0)
-    otherMismatch <- pmin(otherMismatch, setItems(pastMaxShift, dim = 3.2, "other"))
-    # subtract other land mismatch
-    gsn[, , "other"] <- gsn[, , "other"] - otherMismatch
-    # add to ESA CCI "pasture & rangeland" class instead
-    gsn[, , "past"] <- gsn[, , "past"] + setItems(otherMismatch, dim = 3.2, "past")
+    gsn <- toolCorrectOpenEcosystemMismatch(gsn, luIni)
 
     if (nclasses %in% c("seven", "nine")) {
       # differentiate primary and secondary forest based on LUH3 data

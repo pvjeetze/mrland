@@ -89,18 +89,7 @@ calcIrrecoverableCarbonLand <- function(maginput = TRUE, nclasses = "seven",
     )[, "y2020", ]
     getYears(luIni) <- NULL
     getCells(luIni) <- getCells(ic)
-    # calculate mismatch that is shifted to pasture
-    otherMismatch <- ic[, , "other"] - luIni[, , "other"]
-    otherMismatch <- toolConditionalReplace(otherMismatch, c("<0", "is.na()"), 0)
-    # but shift cannot be bigger than current LUH pasture
-    # to avoid additional pasture expansion due to conservation measure
-    pastMaxShift <- setNames(luIni[, , "past"], NULL) - ic[, , "past"]
-    pastMaxShift <- toolConditionalReplace(pastMaxShift, c("<0", "is.na()"), 0)
-    otherMismatch <- pmin(otherMismatch, setItems(pastMaxShift, dim = 3.2, "other"))
-    # subtract other land mismatch
-    ic[, , "other"] <- ic[, , "other"] - otherMismatch
-    # add to ESA CCI "pasture & rangeland" class instead
-    ic[, , "past"] <- ic[, , "past"] + setItems(otherMismatch, dim = 3.2, "past")
+    ic <- toolCorrectOpenEcosystemMismatch(ic, luIni)
 
     if (nclasses %in% c("seven", "nine")) {
       # differentiate primary and secondary forest based on luh3 data

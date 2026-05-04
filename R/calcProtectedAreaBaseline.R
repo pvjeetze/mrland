@@ -80,18 +80,7 @@ calcProtectedAreaBaseline <- function(magpie_input = TRUE, nclasses = "seven", #
       nclasses = "seven", aggregate = FALSE, cellular = TRUE, input_magpie = TRUE
     )[, getYears(PABaseline), ]
     luIni <- setCells(luIni, getCells(PABaseline))
-    # calculate mismatch that is shifted to pasture
-    otherMismatch <- PABaseline[, , "other"] - luIni[, , "other"]
-    otherMismatch <- toolConditionalReplace(otherMismatch, c("<0", "is.na()"), 0)
-    # but shift cannot be bigger than current LUH pasture
-    # to avoid additional pasture expansion due to conservation measure
-    pastMaxShift <- setNames(luIni[, , "past"], NULL) - PABaseline[, , "past"]
-    pastMaxShift <- toolConditionalReplace(pastMaxShift, c("<0", "is.na()"), 0)
-    otherMismatch <- pmin(otherMismatch, setItems(pastMaxShift, dim = 3.2, "other"))
-    # subtract other land mismatch
-    PABaseline[, , "other"] <- PABaseline[, , "other"] - otherMismatch # nolint
-    # add to ESA CCI "pasture & rangeland" class instead
-    PABaseline[, , "past"] <- PABaseline[, , "past"] + setItems(otherMismatch, dim = 3.2, "past") # nolint
+    PABaseline <- toolCorrectOpenEcosystemMismatch(PABaseline, luIni) # nolint
 
     if (nclasses %in% c("seven", "nine")) {
       # differentiate primary and secondary forest based on luh3 data

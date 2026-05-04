@@ -71,18 +71,7 @@ calcKeyBiodiversityAreas <- function(maginput = TRUE, unprotected = TRUE,
     )[, "y2020", ]
     getYears(luIni) <- NULL
     getCells(luIni) <- getCells(kba)
-    # calculate mismatch that is shifted to pasture
-    otherMismatch <- kba[, , "other"] - luIni[, , "other"]
-    otherMismatch <- toolConditionalReplace(otherMismatch, c("<0", "is.na()"), 0)
-    # but shift cannot be bigger than current LUH pasture
-    # to avoid additional pasture expansion due to conservation measure
-    pastMaxShift <- setNames(luIni[, , "past"], NULL) - kba[, , "past"]
-    pastMaxShift <- toolConditionalReplace(pastMaxShift, c("<0", "is.na()"), 0)
-    otherMismatch <- pmin(otherMismatch, setItems(pastMaxShift, dim = 3.2, "other"))
-    # subtract other land mismatch
-    kba[, , "other"] <- kba[, , "other"] - otherMismatch
-    # add to ESA CCI "pasture & rangeland" class instead
-    kba[, , "past"] <- kba[, , "past"] + setItems(otherMismatch, dim = 3.2, "past")
+    kba <- toolCorrectOpenEcosystemMismatch(kba, luIni)
 
     if (nclasses %in% c("seven", "nine")) {
       # differentiate primary and secondary forest based on luh3 data

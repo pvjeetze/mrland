@@ -269,8 +269,8 @@ calcConservationPriorities <- function(consvBaseYear = "y1750", cells = "lpjcell
 
   if (consvBaseYear != "y2020") {
     if (!baseYearIPLCLand) {
-      iplc <- consvPrio[, , grep("IPLC", getItems(consvPrio, dim = 3))]
-      consvPrio <- consvPrio[, , grep("IPLC", getItems(consvPrio, dim = 3)), invert = TRUE]
+      iplc <- consvPrio[, , "IPLC", pmatch = TRUE]
+      consvPrio <- consvPrio[, , "IPLC", pmatch = TRUE, invert = TRUE]
     }
     # Reclassify LUH classes to MAgPIE classes
     if (nclasses == "seven") {

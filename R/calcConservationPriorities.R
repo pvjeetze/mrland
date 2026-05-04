@@ -17,7 +17,7 @@
 #' primary and secondary non-forest vegetation and therefore returns "crop", "past", "range",
 #' "forestry", "primforest", "secdforest", "urban", "primother" and "secdother"
 #' }
-#' @param baseYearIPLCLand Whether the reference year for land conservation \code{"consvBaseYear"} also
+#' @param baseYearIPLCLand Whether the reference year for land conservation \code{"consvBaseYear"}
 #' also is applied to IPLC land. The default is \code{FALSE} to avoid land-use change on IPLC land.
 #'
 #' @return magpie object in cellular resolution with different protection options in conservation priority areas
@@ -269,8 +269,8 @@ calcConservationPriorities <- function(consvBaseYear = "y1750", cells = "lpjcell
 
   if (consvBaseYear != "y2020") {
     if (!baseYearIPLCLand) {
-      iplc <- consvPrio[, , grep("IPLC", getItems(consvPrio, dim = 3))]
-      consvPrio <- consvPrio[, , grep("IPLC", getItems(consvPrio, dim = 3)), invert = TRUE]
+      iplc <- consvPrio[, , "IPLC", pmatch = TRUE]
+      consvPrio <- consvPrio[, , "IPLC", pmatch = TRUE, invert = TRUE]
     }
     # Reclassify LUH classes to MAgPIE classes
     if (nclasses == "seven") {

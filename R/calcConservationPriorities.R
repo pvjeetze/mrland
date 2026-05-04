@@ -17,7 +17,7 @@
 #' primary and secondary non-forest vegetation and therefore returns "crop", "past", "range",
 #' "forestry", "primforest", "secdforest", "urban", "primother" and "secdother"
 #' }
-#' @param baseYearIPLCLand Whether the reference year for land conservation \code{"consvBaseYear"} also
+#' @param baseYearIPLCLand Whether the reference year for land conservation \code{"consvBaseYear"}
 #' also is applied to IPLC land. The default is \code{FALSE} to avoid land-use change on IPLC land.
 #'
 #' @return magpie object in cellular resolution with different protection options in conservation priority areas
